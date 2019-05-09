@@ -1,4 +1,4 @@
-# suggest-text-chat-bot
+# UIControlSuggestedActionText
 
 This projectory holds sample for both client and service applications. It helps provide a mechanism on client end by which we can toggle to have user input `enabled` (when service replies for input request) or `disabled` (when service replies with suggestedAction). 
 
@@ -11,8 +11,8 @@ The suggested action flow is controlled via `MessageFactory.suggestedActions` AP
 ```diff
     async sendSuggestedActions(turnContext) {
         var actionOptions = ['Red', 'Yellow', 'Blue'];
-    +   var reply = MessageFactory.suggestedActions(actionOptions, 'What is the best color?');
-    +   reply.channelData = {chatBox: 'disable'};
++       var reply = MessageFactory.suggestedActions(actionOptions, 'What is the best color?');
++       reply.channelData = {chatBox: 'disable'};
         await turnContext.sendActivity(reply);
     }
 ```
