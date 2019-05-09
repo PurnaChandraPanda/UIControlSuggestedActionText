@@ -12,7 +12,7 @@ This bot has been created using [Bot Framework](https://dev.botframework.com), i
     # determine node version
     node --version
     ```
-- Update `.env` with required configuration settings
+- Create/ update `.env` with required configuration settings
     - MicrosoftAppId
     - MicrosoftAppPassword
 
