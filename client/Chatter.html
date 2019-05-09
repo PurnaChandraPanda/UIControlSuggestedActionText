@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html>
+  <body>
+    <div id="webchat" role="main"></div>
+    <script src="https://cdn.botframework.com/botframework-webchat/latest/webchat.js"></script>
+    <script>
+        // Get welcome message
+        // We are using a customized store to add hooks to connect event        
+        const store = window.WebChat.createStore({}, ({ dispatch }) => next => action => {
+          if (action.type === 'DIRECT_LINE/CONNECT_FULFILLED') {
+            dispatch({
+              type: 'WEB_CHAT/SEND_EVENT',
+              payload: {
+                name: 'webchat/join',
+                value: { language: window.navigator.language }
+              }
+            });
+          }       
+          
+          // Toggle on response from service - via client side Event trigger
+          // If service responds action.payload.activity.channelData.chatBox as enable, ON the user input capability
+          // If service responds action.payload.activity.channelData.chatBox as disable, OFF the user input capability and continue with suggestedActions
+          if (action && action.payload && action.payload.activity && action.payload.activity.channelData && action.payload.activity.channelData.chatBox) {
+            const event = new Event(`chatBox`);
+            event.data = action.payload.activity.channelData.chatBox;
+            window.dispatchEvent(event);
+          }
+          
+          return next(action);
+        });
+
+        // Event listener
+        window.addEventListener('chatBox', ({ data }) => {
+            const chatBox = document.querySelector(`[data-id="webchat-sendbox-input"]`);
+            if(chatBox !== null){
+              switch(data){
+                  case 'enable':
+                      chatBox.disabled = false;
+                      break;
+                  case 'disable':
+                      chatBox.disabled = true;
+                      break;
+              }
+            }
+        });
+
+        // Set the StyleOptions for avatar
+        const styleOptions = {
+          botAvatarInitials: 'WC',
+          userAvatarInitials: 'WW'
+        };
+
+        // Render the webchat control
+        window.WebChat.renderWebChat({
+          directLine: window.WebChat.createDirectLine({ token: 'your-DirectLine-secret-key' }),
+          store,
+          userID: 'YOUR_USER_ID',
+          username: 'Web Chat User',
+          locale: 'en-US',
+          styleOptions
+        }, document.getElementById('webchat'));
+
+        document.querySelector('#webchat > *').focus();
+    </script>
+  </body>
+</html>
